@@ -1,0 +1,64 @@
+/* Custom styles that can't be replicated with Tailwind utilities */
+
+/* Sidebar transition and hover effects */
+.sidebar-transition {
+  transition: width 0.3s ease, transform 0.3s ease;
+}
+
+.sidebar-expanded {
+  width: 200px !important;
+}
+
+.label-transition {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  white-space: nowrap;
+}
+
+.label-hidden {
+  opacity: 0;
+  transform: translateX(-10px);
+  display: inline-block;
+}
+
+.label-visible {
+  opacity: 1;
+  transform: translateX(0);
+  display: inline-block;
+}
+
+/* Calendar grid */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.3rem;
+}
+
+/* Smooth animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Custom scrollbar for mobile tabs */
+.tabs-scroll::-webkit-scrollbar {
+  height: 4px;
+}
+
+.tabs-scroll::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.tabs-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 2px;
+}

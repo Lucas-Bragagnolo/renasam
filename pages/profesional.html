@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dr. Carlos Rodríguez - Perfil Profesional</title>
+
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- SweetAlert2 para confirmaciones elegantes -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Luxon for date handling -->
+  <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAe-c71AJSY31lf99YzRfc5-wbJZJ0oFYE&libraries=places" async defer></script>
+</head>
+<body class="font-roboto bg-gray-50 transition-all duration-300" id="main-body">
+
+  <!-- ===== SIDEBAR DESKTOP ===== -->
+  <nav id="sidebar" class="fixed top-0 left-0 h-screen w-15 bg-white border-r border-gray-200 shadow-lg overflow-hidden z-50 hidden md:block transition-all duration-300 ease-in-out hover:w-48">
+    <ul class="list-none mt-15">
+      <li data-section="buscar" class="menu-item active flex items-center p-4 cursor-pointer transition-all duration-200 hover:bg-blue-50 relative group">
+        <a href="index.html" class="flex items-center w-full">
+          <span class="material-icons text-2xl min-w-6 text-center transition-colors duration-300 text-blue-600">search</span>
+          <span class="menu-label ml-4 opacity-0 transform translate-x-4 transition-all duration-300 whitespace-nowrap text-sm font-medium">Buscar</span>
+        </a>
+        <div class="absolute left-0 top-0 h-full w-1 bg-blue-600 active-indicator"></div>
+      </li>
+      <li data-section="mensajes" class="menu-item flex items-center p-4 cursor-pointer transition-all duration-200 hover:bg-blue-50 relative">
+        <a href="#" class="flex items-center w-full">
+          <span class="material-icons text-2xl min-w-6 text-center transition-colors duration-300">chat</span>
+          <span class="menu-label ml-4 opacity-0 transform translate-x-4 transition-all duration-300 whitespace-nowrap text-sm font-medium">Mensajes</span>
+        </a>
+      </li>
+      <li data-section="notificaciones" class="menu-item flex items-center p-4 cursor-pointer transition-all duration-200 hover:bg-blue-50 relative">
+        <a href="#" class="flex items-center w-full">
+          <span class="material-icons text-2xl min-w-6 text-center transition-colors duration-300">notifications</span>
+          <span class="menu-label ml-4 opacity-0 transform translate-x-4 transition-all duration-300 whitespace-nowrap text-sm font-medium">Notificaciones</span>
+        </a>
+      </li>
+    </ul>
+    <ul class="list-none absolute bottom-4 w-full">
+      <li data-section="mi-perfil" class="menu-item flex items-center p-4 cursor-pointer transition-all duration-200 hover:bg-blue-50 relative">
+        <a href="#" class="flex items-center w-full">
+          <img id="user-picture" alt="Foto de perfil" class="w-6 h-6 rounded-full min-w-6" src="/placeholder.svg?height=24&width=24">
+          <span class="menu-label ml-4 opacity-0 transform translate-x-4 transition-all duration-300 whitespace-nowrap text-sm font-medium">Mi Perfil</span>
+        </a>
+      </li>
+      <li data-section="cerrar-sesion" class="menu-item flex items-center p-4 cursor-pointer transition-all duration-200 hover:bg-blue-50 relative">
+        <a href="#" class="flex items-center w-full">
+          <span class="material-icons text-2xl min-w-6 text-center transition-colors duration-300">logout</span>
+          <span class="menu-label ml-4 opacity-0 transform translate-x-4 transition-all duration-300 whitespace-nowrap text-sm font-medium">Cerrar Sesión</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- ===== BARRA INFERIOR MOBILE ===== -->
+  <div class="bottom-nav fixed bottom-0 left-0 right-0 h-15 bg-white border-t border-gray-200 shadow-lg flex justify-around items-center z-50 md:hidden">
+    <a href="index.html" class="active flex flex-col items-center text-xs text-blue-600 p-1.5">
+      <span class="material-icons text-xl mb-0.5">search</span>
+      Buscar
+    </a>
+    <a href="#" class="flex flex-col items-center text-xs text-gray-800 p-1.5">
+      <span class="material-icons text-xl mb-0.5">chat</span>
+      Mensajes
+    </a>
+    <a href="#" class="flex flex-col items-center text-xs text-gray-800 p-1.5">
+      <span class="material-icons text-xl mb-0.5">notifications</span>
+      Notif.
+    </a>
+    <a href="#" class="flex flex-col items-center text-xs text-gray-800 p-1.5">
+      <img id="user-picture2" alt="Foto de perfil" class="w-6 h-6 rounded-full mb-0.5" src="/placeholder.svg?height=24&width=24">
+      Perfil
+    </a>
+  </div>
+
+  <div id="content" class="transition-all duration-300 p-2.5 pb-20 md:p-8 md:pb-8 md:ml-15">
+
+    <!-- Botón de volver -->
+    <div class="mb-4">
+      <button onclick="window.history.back()" class="flex items-center gap-2 text-sky-600 hover:text-sky-800 transition-colors duration-200">
+        <span class="material-icons">arrow_back</span>
+        <span class="text-sm font-medium">Volver a resultados</span>
+      </button>
+    </div>
+
+    <!-- Perfil del profesional -->
+    <div class="perfil-profesional flex flex-wrap bg-white rounded-2xl shadow-lg p-4 md:p-8 gap-4 md:gap-8 max-w-4xl mx-auto">
+      <div class="perfil-left flex flex-col md:flex-row items-center justify-around gap-4">
+        <div class="perfil-foto flex justify-center items-center">
+          <img id="professional-photo" alt="Foto del profesional" class="w-30 h-30 rounded-full object-cover border-3 border-sky-500" src="/placeholder.svg?height=120&width=120">
+        </div>
+
+        <div class="acciones-profesional flex flex-col gap-3 items-stretch">
+          <div class="perfil-header text-center md:text-left">
+            <h2 id="professional-name" class="text-2xl font-medium mb-1 text-gray-800">Dr. Carlos Rodríguez</h2>
+            <p id="professional-specialty" class="especialidad text-gray-600 mb-2">Cardiología</p>
+            <div class="rating text-amber-500 font-medium">
+              ⭐ <strong id="professional-rating">4.8</strong> <span id="professional-reviews" class="resenas font-normal text-gray-500 ml-1">(124 reseñas)</span>
+            </div>
+          </div>
+
+          <!-- Panel de solicitudes de contacto -->
+          <div class="solicitudes-panel bg-gradient-to-r from-blue-50 to-sky-50 border border-blue-200 rounded-xl p-4 mb-4">
+            <div class="flex items-center justify-between flex-wrap gap-2">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                  <span class="material-icons text-white text-sm">contact_mail</span>
+                </div>
+                <div>
+                  <h3 class="font-semibold text-gray-800 text-xs">Solicitudes restantes</h3>
+                  <p class="text-xs text-gray-600" id="solicitudes-info">5 contactos gratuitos</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-1" id="solicitudes-dots">
+                <!-- Se llenarán dinámicamente -->
+              </div>
+            </div>
+          </div>
+
+          <button id="btn-contactar" class="btn-contactar bg-green-500 text-white border-0 py-3 px-4 rounded-lg text-base font-semibold cursor-pointer hover:bg-green-600 transition-colors duration-200">
+            📞 Solicitar contacto
+          </button>
+          
+          <button class="btn-turno bg-sky-500 text-white border-0 py-3 px-4 rounded-lg text-base font-semibold cursor-pointer hover:bg-sky-600 transition-colors duration-200">
+            📅 Agendar turno
+          </button>
+          
+          <a href="#" class="btn-mensaje bg-white text-sky-500 border border-sky-500 py-3 px-4 rounded-lg text-center text-base font-semibold no-underline hover:bg-sky-50 transition-colors duration-200">
+            💬 Enviar mensaje
+          </a>
+        </div>
+      </div>
+
+      <div class="perfil-right flex-1 min-w-65">
+        <div class="perfil-descripcion mb-6">
+          <h4 class="text-lg font-medium mb-2 text-gray-800">Sobre mí</h4>
+          <p id="professional-description" class="text-gray-700 leading-relaxed">
+            Cardiólogo con más de 15 años de experiencia. Especialista en cardiología intervencionista y prevención cardiovascular.
+            Formado en la Universidad de Buenos Aires y con posgrado en la Universidad de Barcelona.
+          </p>
+        </div>
+
+        <div class="perfil-info">
+          <h4 class="text-lg font-medium mb-2 text-gray-800">Ubicación</h4>
+          <p class="mb-4 text-gray-600">📍 <span id="professional-zone">Zona Centro</span> - <span class="text-gray-500 text-sm">Ubicación exacta disponible tras solicitar contacto</span></p>
+
+          <h4 class="text-lg font-medium mb-2 text-gray-800">Especialidades</h4>
+          <div class="badges flex flex-wrap gap-2 mb-4" id="professional-specialties">
+            <span class="badge bg-gray-100 text-gray-700 py-1.5 px-2.5 text-sm rounded-full font-medium">Cardiología</span>
+            <span class="badge bg-gray-100 text-gray-700 py-1.5 px-2.5 text-sm rounded-full font-medium">Intervencionista</span>
+            <span class="badge bg-gray-100 text-gray-700 py-1.5 px-2.5 text-sm rounded-full font-medium">Prevención cardiovascular</span>
+          </div>
+
+          <h4 class="text-lg font-medium mb-2 text-gray-800">Obras sociales</h4>
+          <div class="badges flex flex-wrap gap-2 mb-4" id="professional-insurance">
+            <!-- Se llenarán dinámicamente -->
+          </div>
+
+          <h4 class="text-lg font-medium mb-2 text-gray-800">Idiomas</h4>
+          <div class="badges flex flex-wrap gap-2">
+            <span class="badge bg-gray-100 text-gray-700 py-1.5 px-2.5 text-sm rounded-full font-medium">Español</span>
+            <span class="badge bg-gray-100 text-gray-700 py-1.5 px-2.5 text-sm rounded-full font-medium">Inglés</span>
+            <span class="badge bg-gray-100 text-gray-700 py-1.5 px-2.5 text-sm rounded-full font-medium">Portugués</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs container -->
+    <div class="tabs-container bg-white mx-auto rounded-2xl p-4 md:p-6 shadow-lg max-w-4xl mt-4 md:mt-8">
+      
+      <!-- Mobile dropdown -->
+      <div class="tabs-dropdown block mb-4 md:hidden">
+        <select id="tabs-select" class="w-full p-3 text-base font-medium rounded-lg border border-gray-300 bg-white text-blue-900 appearance-none focus:outline-none focus:border-blue-900 focus:ring-3 focus:ring-blue-200">
+          <option value="info">Información</option>
+          <option value="agendar">Agendar turno</option>
+          <option value="resenas">Reseñas</option>
+        </select>
+      </div>
+
+      <!-- Desktop tabs -->
+      <div class="tabs hidden md:flex gap-4 mb-4">
+        <button class="tab-button flex-1 p-3 border-0 bg-sky-500 text-white font-medium cursor-pointer rounded-lg transition-colors duration-300 active" data-tab="info">
+          Información
+        </button>
+        <button class="tab-button flex-1 p-3 border-0 bg-gray-100 font-medium cursor-pointer rounded-lg transition-colors duration-300" data-tab="agendar">
+          Agendar turno
+        </button>
+        <button class="tab-button flex-1 p-3 border-0 bg-gray-100 font-medium cursor-pointer rounded-lg transition-colors duration-300" data-tab="resenas">
+          Reseñas
+        </button>
+      </div>
+
+      <!-- Tab content: Información -->
+      <div class="tab-content block" id="info">
+        <div class="cv-acreditaciones-section mt-8 border-t border-gray-200 pt-8">
+          <h3 class="mb-6 text-gray-800 text-xl">Currículum y Acreditaciones</h3>
+
+          <div class="cv-subsection-toggle active flex justify-between items-center p-4 bg-sky-50 text-sky-500 rounded-lg mb-2 cursor-pointer font-semibold transition-colors duration-200 hover:bg-gray-200" data-target="experiencia-content">
+            <h4 class="m-0 text-base flex items-center gap-2">
+              Experiencia Laboral <span class="toggle-icon text-xl transition-transform duration-300" style="transform: rotate(180deg);">▼</span>
+            </h4>
+          </div>
+          <div class="cv-subsection-content block p-4 bg-gray-50 rounded-lg mb-4 border border-gray-200 fade-in" id="experiencia-content">
+            <div class="job-entry mb-4 pb-4 border-b border-dashed border-gray-200 last:border-b-0 last:mb-0 last:pb-0">
+              <h5 class="m-0 mb-1 text-sm font-medium text-gray-800">Cardiólogo Intervencionista - Hospital Central</h5>
+              <p class="m-0 text-xs text-gray-600 mb-2">2010 - Presente</p>
+              <ul class="mt-2 pl-5 text-xs text-gray-600 list-disc">
+                <li>Realización de procedimientos cardiovasculares avanzados.</li>
+                <li>Participación activa en equipos multidisciplinarios de investigación.</li>
+              </ul>
+            </div>
+            <div class="job-entry">
+              <h5 class="m-0 mb-1 text-sm font-medium text-gray-800">Médico Residente de Cardiología - Clínica del Sol</h5>
+              <p class="m-0 text-xs text-gray-600 mb-2">2006 - 2009</p>
+              <ul class="mt-2 pl-5 text-xs text-gray-600 list-disc">
+                <li>Diagnóstico y tratamiento de enfermedades cardiovasculares.</li>
+                <li>Guardias activas en unidad coronaria.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="cv-subsection-toggle flex justify-between items-center p-4 bg-gray-100 rounded-lg mb-2 cursor-pointer font-semibold text-gray-700 transition-colors duration-200 hover:bg-gray-200" data-target="educacion-content">
+            <h4 class="m-0 text-base flex items-center gap-2">
+              Educación <span class="toggle-icon text-xl transition-transform duration-300">▼</span>
+            </h4>
+          </div>
+          <div class="cv-subsection-content hidden p-4 bg-gray-50 rounded-lg mb-4 border border-gray-200 fade-in" id="educacion-content">
+            <div class="education-entry mb-4 pb-4 border-b border-dashed border-gray-200 last:border-b-0 last:mb-0 last:pb-0">
+              <h5 class="m-0 mb-1 text-sm font-medium text-gray-800">Posgrado en Cardiología Intervencionista</h5>
+              <p class="m-0 text-xs text-gray-600">Universidad de Barcelona, España (2009-2010)</p>
+            </div>
+            <div class="education-entry">
+              <h5 class="m-0 mb-1 text-sm font-medium text-gray-800">Doctorado en Medicina</h5>
+              <p class="m-0 text-xs text-gray-600">Universidad de Buenos Aires, Argentina (2000-2005)</p>
+            </div>
+          </div>
+
+          <div class="cv-subsection-toggle flex justify-between items-center p-4 bg-gray-100 rounded-lg mb-2 cursor-pointer font-semibold text-gray-700 transition-colors duration-200 hover:bg-gray-200" data-target="acreditaciones-content">
+            <h4 class="m-0 text-base flex items-center gap-2">
+              Acreditaciones y Certificaciones <span class="toggle-icon text-xl transition-transform duration-300">▼</span>
+            </h4>
+          </div>
+          <div class="cv-subsection-content hidden p-4 bg-gray-50 rounded-lg mb-4 border border-gray-200 fade-in" id="acreditaciones-content">
+            <div class="accreditation-item mb-4 pb-4 border-b border-dashed border-gray-200 last:border-b-0 last:mb-0 last:pb-0">
+              <h5 class="m-0 mb-1 text-sm font-medium text-gray-800">Licencia Médica Nacional</h5>
+              <p class="m-0 text-xs text-gray-600">Número: 123456</p>
+              <p class="m-0 text-xs text-gray-600">Emitida por: Ministerio de Salud de Argentina</p>
+              <p class="m-0 text-xs text-gray-600">Válido hasta: 31/12/2028</p>
+            </div>
+            <div class="accreditation-item">
+              <h5 class="m-0 mb-1 text-sm font-medium text-gray-800">Certificación en Cardiología Intervencionista</h5>
+              <p class="m-0 text-xs text-gray-600">Emitida por: Sociedad Argentina de Cardiología</p>
+              <p class="m-0 text-xs text-gray-600">Fecha de emisión: 01/03/2011</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab content: Agendar turno -->
+      <div class="tab-content hidden" id="agendar">
+        <div class="agendar-turno-container flex flex-wrap gap-8 mt-8">
+
+          <!-- Sección lugares de atención -->
+          <div class="seccion-lugares-atencion bg-white rounded-xl shadow-md p-6 flex-1 min-w-70">
+            <h3 class="mb-4 text-gray-800 text-lg border-b border-gray-200 pb-3">1. Selecciona el lugar de atención</h3>
+            <div class="lugares-grid flex flex-col gap-4">
+              <div class="card-lugar-seleccionable active border-2 border-sky-500 bg-sky-50 rounded-xl p-4 cursor-pointer transition-all duration-200 shadow-sm" data-id="consultorio-privado">
+                <strong class="block text-base text-gray-800 mb-3">Consultorio Privado</strong>
+                <div class="flex items-center mb-2">
+                  <span class="w-2 h-2 bg-pink-500 rounded-full mr-2"></span>
+                  <span class="text-sm text-gray-600">Zona Centro - <span class="text-xs text-gray-400">Dirección exacta tras contacto</span></span>
+                </div>
+                <div class="flex items-center mb-3">
+                  <span class="text-red-500 mr-2">📞</span>
+                  <span class="text-sm text-gray-600">Teléfono disponible tras contacto</span>
+                </div>
+                <div class="text-xs text-gray-500 border-t border-dashed border-gray-200 pt-2">
+                  Lunes: 14:00 - 19:00 | Miércoles: 09:00 - 13:00
+                </div>
+              </div>
+              <div class="card-lugar-seleccionable border-2 border-gray-200 bg-gray-50 rounded-xl p-4 cursor-pointer transition-all duration-200 hover:border-sky-300 hover:bg-sky-50" data-id="hospital-italiano">
+                <strong class="block text-base text-gray-800 mb-3">Hospital Italiano</strong>
+                <div class="flex items-center mb-2">
+                  <span class="w-2 h-2 bg-pink-500 rounded-full mr-2"></span>
+                  <span class="text-sm text-gray-600">Zona Sur - <span class="text-xs text-gray-400">Dirección exacta tras contacto</span></span>
+                </div>
+                <div class="flex items-center mb-3">
+                  <span class="text-red-500 mr-2">📞</span>
+                  <span class="text-sm text-gray-600">Teléfono disponible tras contacto</span>
+                </div>
+                <div class="text-xs text-gray-500 border-t border-dashed border-gray-200 pt-2">
+                  Martes: 10:00 - 16:00 | Jueves: 12:00 - 18:00
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sección fecha y hora -->
+          <div class="seccion-fecha-hora bg-white rounded-xl shadow-md p-6 flex-1 min-w-70">
+            <h3 class="mb-4 text-gray-800 text-lg border-b border-gray-200 pb-3">2. Selecciona la fecha y hora</h3>
+
+            <!-- Navegación del calendario -->
+            <div class="calendario-nav flex justify-between items-center mb-6">
+              <button class="nav-btn bg-white border border-gray-300 rounded-md py-2 px-3 cursor-pointer text-base text-gray-600 transition-colors duration-200 hover:bg-gray-100" id="prevMonth">‹</button>
+              <span id="currentMonthYear" class="text-lg font-medium text-gray-800">Junio 2025</span>
+              <button class="nav-btn bg-white border border-gray-300 rounded-md py-2 px-3 cursor-pointer text-base text-gray-600 transition-colors duration-200 hover:bg-gray-100" id="nextMonth">›</button>
+            </div>
+
+            <!-- Calendario -->
+            <div class="calendario-container mb-6">
+              <!-- Días de la semana -->
+              <div class="grid grid-cols-7 gap-1 mb-2">
+                <div class="text-center text-sm font-medium text-gray-500 py-2">Lun</div>
+                <div class="text-center text-sm font-medium text-gray-500 py-2">Mar</div>
+                <div class="text-center text-sm font-medium text-gray-500 py-2">Mié</div>
+                <div class="text-center text-sm font-medium text-gray-500 py-2">Jue</div>
+                <div class="text-center text-sm font-medium text-gray-500 py-2">Vie</div>
+                <div class="text-center text-sm font-medium text-gray-500 py-2">Sáb</div>
+                <div class="text-center text-sm font-medium text-gray-500 py-2">Dom</div>
+              </div>
+              
+              <!-- Días del calendario -->
+              <div id="calendarioGrid" class="grid grid-cols-7 gap-1">
+                <!-- Los días se generarán dinámicamente con JavaScript -->
+              </div>
+            </div>
+
+            <!-- Filtros de horario -->
+            <div class="filtros-horario flex gap-2 mb-4">
+              <button class="filtro-btn flex-1 py-2.5 px-3 bg-sky-400 text-white border-0 rounded-lg cursor-pointer font-medium transition-all duration-200 active" data-turno="manana">Mañana</button>
+              <button class="filtro-btn flex-1 py-2.5 px-3 bg-gray-200 text-gray-700 border-0 rounded-lg cursor-pointer font-medium transition-all duration-200 hover:bg-sky-400 hover:text-white" data-turno="tarde">Tarde</button>
+              <button class="filtro-btn flex-1 py-2.5 px-3 bg-gray-200 text-gray-700 border-0 rounded-lg cursor-pointer font-medium transition-all duration-200 hover:bg-sky-400 hover:text-white" data-turno="noche">Noche</button>
+            </div>
+
+            <!-- Horarios disponibles -->
+            <div class="horarios-disponibles flex flex-wrap gap-2 min-h-20 items-start" id="horariosDisponibles">
+              <div class="horario bg-gray-50 border border-gray-300 py-2.5 px-4 rounded-lg cursor-pointer font-medium transition-all duration-200 text-gray-700 hover:bg-sky-50 hover:border-sky-300">09:00</div>
+              <div class="horario bg-gray-50 border border-gray-300 py-2.5 px-4 rounded-lg cursor-pointer font-medium transition-all duration-200 text-gray-700 hover:bg-sky-50 hover:border-sky-300">09:30</div>
+              <div class="horario bg-gray-50 border border-gray-300 py-2.5 px-4 rounded-lg cursor-pointer font-medium transition-all duration-200 text-gray-700 hover:bg-sky-50 hover:border-sky-300">10:00</div>
+            </div>
+          </div>
+
+          <!-- Sección resumen y confirmación -->
+          <div class="seccion-resumen-confirmar bg-white rounded-xl shadow-md p-6 flex-1 min-w-70">
+            <h3 class="mb-4 text-gray-800 text-lg border-b border-gray-200 pb-3">3. Confirma tu turno</h3>
+            <div class="resumen-turno bg-gray-100 rounded-lg p-4 mb-6">
+              <p class="my-2 text-gray-700 text-sm">Lugar: <span id="resumenLugar" class="font-semibold text-gray-800">Consultorio Privado</span></p>
+              <p class="my-2 text-gray-700 text-sm">Fecha: <span id="resumenFecha" class="font-semibold text-gray-800">No seleccionada</span></p>
+              <p class="my-2 text-gray-700 text-sm">Hora: <span id="resumenHora" class="font-semibold text-gray-800">No seleccionada</span></p>
+            </div>
+            <button class="btn-confirmar-turno w-full py-3.5 bg-green-500 text-white border-0 rounded-xl font-semibold text-lg cursor-pointer transition-colors duration-200 hover:bg-green-600 disabled:bg-gray-300 disabled:cursor-not-allowed" id="btnConfirmarTurno" disabled>
+              Confirmar turno
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Tab content: Reseñas -->
+      <div class="tab-content hidden" id="resenas">
+        <div class="resenas-layout flex gap-8 bg-white p-8 rounded-2xl max-w-4xl mx-auto shadow-lg flex-wrap">
+
+          <div class="resumen-resenas flex-none w-55 text-center border-r border-gray-200 pr-4">
+            <div class="numero-promedio text-5xl font-bold text-sky-500 mb-2">4.8</div>
+            <div class="estrellas-promedio text-amber-500 text-2xl mb-2">
+              ★ ★ ★ ★ ★
+            </div>
+            <div class="total-resenas text-gray-500 text-sm">124 reseñas</div>
+          </div>
+
+          <div class="opiniones-detalladas flex-1 flex flex-col gap-6 pl-4">
+            <div class="opinion-card bg-gray-50 rounded-xl p-4">
+              <div class="opinion-header flex justify-between items-center font-medium mb-2">
+                <strong>Juan Pérez</strong>
+                <span class="estrellas text-amber-500 text-lg">★★★★☆</span>
+              </div>
+              <p class="opinion-comentario text-sm text-gray-700 mb-2">Muy buena atención, me sentí cómodo durante todo el proceso.</p>
+              <div class="opinion-fecha text-xs text-right text-gray-400">15 mayo 2023</div>
+            </div>
+
+            <hr class="border-0 h-px bg-gray-200 my-5">
+
+            <div class="opinion-card bg-gray-50 rounded-xl p-4">
+              <div class="opinion-header flex justify-between items-center font-medium mb-2">
+                <strong>María López</strong>
+                <span class="estrellas text-amber-500 text-lg">★★★★★</span>
+              </div>
+              <p class="opinion-comentario text-sm text-gray-700 mb-2">Excelente profesional. Me explicó todo con claridad.</p>
+              <div class="opinion-fecha text-xs text-right text-gray-400">3 abril 2023</div>
+            </div>
+
+            <hr class="border-0 h-px bg-gray-200 my-5">
+
+            <div class="opinion-card bg-gray-50 rounded-xl p-4">
+              <div class="opinion-header flex justify-between items-center font-medium mb-2">
+                <strong>Roberto Gómez</strong>
+                <span class="estrellas text-amber-500 text-lg">★★★★☆</span>
+              </div>
+              <p class="opinion-comentario text-sm text-gray-700 mb-2">Atento y puntual. Lo recomendaría sin dudas.</p>
+              <div class="opinion-fecha text-xs text-right text-gray-400">20 marzo 2023</div>
+            </div>
+
+            <div class="ver-todas-resenas text-center mt-4">
+              <a href="#" class="text-sm text-sky-500 no-underline font-medium hover:underline">Ver todas las reseñas (124)</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    // Configuración de Tailwind
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'roboto': ['Roboto', 'sans-serif']
+          },
+          spacing: {
+            '15': '60px',
+            '30': '120px',
+            '55': '220px',
+            '65': '260px',
+            '70': '280px',
+            '75': '300px',
+            '150': '600px'
+          }
+        }
+      }
+    }
+
+// Funciones de debugging globales
+window.debugProfesional = () => {
+  console.log("Checking ProfesionalManager availability...")
+  if (window.profesionalManager) {
+    console.log("ProfesionalManager found, running debug...")
+    window.profesionalManager.debugElements()
+  } else {
+    console.log("ERROR: ProfesionalManager no está disponible")
+    console.log("Available window properties:", Object.keys(window).filter(key => key.includes('profesional') || key.includes('Manager')))
+  }
+}
+
+window.testTabs = () => {
+  if (window.profesionalManager) {
+    window.profesionalManager.testTabs()
+  } else {
+    console.log("ERROR: ProfesionalManager no está disponible para test de tabs")
+    // Test manual de tabs
+    console.log("Intentando test manual de tabs...")
+    const tabButtons = document.querySelectorAll(".tab-button")
+    console.log("Tab buttons found:", tabButtons.length)
+    if (tabButtons.length > 0) {
+      console.log("Clicking first tab button...")
+      tabButtons[0].click()
+    }
+  }
+}
+
+window.testAccordions = () => {
+  if (window.profesionalManager) {
+    window.profesionalManager.testAccordions()
+  } else {
+    console.log("ERROR: ProfesionalManager no está disponible para test de acordeones")
+    // Test manual de acordeones
+    console.log("Intentando test manual de acordeones...")
+    const accordions = document.querySelectorAll(".cv-subsection-toggle")
+    console.log("Accordions found:", accordions.length)
+    if (accordions.length > 0) {
+      console.log("Clicking first accordion...")
+      accordions[0].click()
+    }
+  }
+}
+
+// Debug inmediato
+console.log("=== DEBUGGING INICIAL ===")
+console.log("Document ready state:", document.readyState)
+console.log("Window profesionalManager:", window.profesionalManager)
+
+// Auto-debug después de cargar
+setTimeout(() => {
+  console.log("=== DEBUGGING AUTOMÁTICO (2s delay) ===")
+  debugProfesional()
+}, 2000)
+
+// Otro intento después de más tiempo
+setTimeout(() => {
+  console.log("=== DEBUGGING AUTOMÁTICO (5s delay) ===")
+  debugProfesional()
+}, 5000)
+</script>
+<!-- Cargar scripts en el orden correcto -->
+<script src="../js/sidebar-manager.js"></script>
+<script src="../js/data-manager.js"></script>
+<script src="../js/search-manager.js"></script>
+<script src="../js/profesional-manager.js"></script>
+<script src="../js/api-service.js"></script>
+<script src="../js/api-mock.js"></script>
+<script src="../js/patient-manager.js"></script>
+<script src="../js/api-integration.js"></script>
+<script src="../js/app.js"></script>
+</body>
+</html>
