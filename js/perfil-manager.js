@@ -169,7 +169,7 @@ class PerfilManager {
 
       // Usar la misma API que usa patient-manager para obtener datos del solicitante
       const response = await this.makeAPIRequest(
-        'http://190.184.224.217/renasam/api/pacientes_solicitante.php',
+        'http://190.184.224.217/renasam/api/solicitantes/pacientes',
         'POST',
         { token: authToken }
       )

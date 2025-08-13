@@ -12,8 +12,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- CSS personalizado para perfil -->
-  <link rel="stylesheet" href="../css/profile-styles.css">
 
   <!-- Google Maps API -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAe-c71AJSY31lf99YzRfc5-wbJZJ0oFYE&libraries=places"
@@ -735,367 +733,164 @@
         </div>
 
         <!-- Formulario -->
-        <div class="max-w-4xl mx-auto">
-          <form id="form-paciente" class="space-y-8">
+        <div class="form-card p-6 md:p-8">
+          <form id="form-paciente">
 
             <!-- Información básica -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <div class="flex items-center gap-3 mb-6">
-                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <span class="material-icons text-blue-600 text-lg">person</span>
-                </div>
-                <div>
-                  <h3 class="text-lg font-semibold text-gray-900">Información Personal</h3>
-                  <p class="text-sm text-gray-600">Datos básicos del paciente</p>
-                </div>
-              </div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                <div class="form-group">
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    <span class="flex items-center gap-2">
-                      <span class="material-icons text-gray-500 text-lg">person</span>
-                      Nombre *
-                    </span>
-                  </label>
-                  <input type="text" id="paciente-nombre" required
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    placeholder="Nombre del paciente">
-                  <div class="error text-red-500 text-sm mt-1 hidden" id="error-nombre"></div>
-                </div>
-
-                <div class="form-group">
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    <span class="flex items-center gap-2">
-                      <span class="material-icons text-gray-500 text-lg">person</span>
-                      Apellido *
-                    </span>
-                  </label>
-                  <input type="text" id="paciente-apellido" required
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    placeholder="Apellido del paciente">
-                  <div class="error text-red-500 text-sm mt-1 hidden" id="error-apellido"></div>
-                </div>
-
-                <div class="form-group">
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    <span class="flex items-center gap-2">
-                      <span class="material-icons text-gray-500 text-lg">badge</span>
-                      DNI *
-                    </span>
-                  </label>
-                  <input type="text" id="paciente-dni" required
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    placeholder="12345678">
-                  <div class="error text-red-500 text-sm mt-1 hidden" id="error-dni"></div>
-                </div>
-
-                <div class="form-group">
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    <span class="flex items-center gap-2">
-                      <span class="material-icons text-gray-500 text-lg">cake</span>
-                      Fecha de Nacimiento *
-                    </span>
-                  </label>
-                  <input type="date" id="paciente-fecha-nacimiento" required
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
-                  <div class="error text-red-500 text-sm mt-1 hidden" id="error-fecha-nacimiento"></div>
-                </div>
-
-                <div class="form-group">
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    <span class="flex items-center gap-2">
-                      <span class="material-icons text-gray-500 text-lg">wc</span>
-                      Género
-                    </span>
-                  </label>
-                  <select id="paciente-genero"
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
-                    <option value="">Seleccionar</option>
-                    <option value="masculino">Masculino</option>
-                    <option value="femenino">Femenino</option>
-                    <option value="otro">Otro</option>
-                    <option value="prefiero-no-decir">Prefiero no decir</option>
-                  </select>
-                </div>
-
-                <div class="form-group">
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    <span class="flex items-center gap-2">
-                      <span class="material-icons text-gray-500 text-lg">family_restroom</span>
-                      Parentesco *
-                    </span>
-                  </label>
-                  <select id="paciente-parentesco" required
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
-                    <option value="">Seleccionar</option>
-                    <option value="Paciente directo">Paciente directo</option>
-                    <option value="Hijo/a">Hijo/a</option>
-                    <option value="Padre/Madre">Padre/Madre</option>
-                    <option value="Esposo/a">Esposo/a</option>
-                    <option value="Hermano/a">Hermano/a</option>
-                    <option value="Abuelo/a">Abuelo/a</option>
-                    <option value="Nieto/a">Nieto/a</option>
-                    <option value="Otro familiar">Otro familiar</option>
-                    <option value="Tutor legal">Tutor legal</option>
-                  </select>
-                  <div class="error text-red-500 text-sm mt-1 hidden" id="error-parentesco"></div>
-                </div>
-
-                <div class="form-group">
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    <span class="flex items-center gap-2">
-                      <span class="material-icons text-gray-500 text-lg">phone</span>
-                      Teléfono
-                    </span>
-                  </label>
-                  <input type="tel" id="paciente-telefono"
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    placeholder="+54 9 11 1234-5678">
-                </div>
-
-                <div class="form-group">
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    <span class="flex items-center gap-2">
-                      <span class="material-icons text-gray-500 text-lg">email</span>
-                      Email
-                    </span>
-                  </label>
-                  <input type="email" id="paciente-email"
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    placeholder="paciente@email.com">
-                </div>
-              </div>
-            </div>
-
-            <!-- Dirección -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <div class="flex items-center gap-3 mb-6">
-                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                  <span class="material-icons text-green-600 text-lg">location_on</span>
-                </div>
-                <div>
-                  <h3 class="text-lg font-semibold text-gray-900">Dirección</h3>
-                  <p class="text-sm text-gray-600">Información de residencia</p>
+            <div class="mb-8">
+              <!-- Header de sección -->
+              <div class="section-header p-6 rounded-xl mb-6">
+                <div class="flex items-center space-x-4">
+                  <div class="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <span class="material-icons text-blue-600">person</span>
+                  </div>
+                  <div>
+                    <h4 class="text-xl font-bold text-gray-900">Información Básica</h4>
+                    <p class="text-gray-600 mt-1">Datos personales del paciente</p>
+                  </div>
                 </div>
               </div>
 
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="form-group">
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    <span class="flex items-center gap-2">
-                      <span class="material-icons text-gray-500 text-lg">place</span>
-                      Calle *
-                    </span>
-                  </label>
-                  <input type="text" id="paciente-calle" required
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    placeholder="Ej: Av. Corrientes">
-                  <div class="error text-red-500 text-sm mt-1 hidden" id="error-calle"></div>
-                </div>
+              <!-- Contenido de la sección -->
+              <div class="bg-blue-50 rounded-xl p-6 border border-blue-200">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <!-- Foto de perfil -->
+                  <div class="md:col-span-2 form-group">
+                    <label class="block text-sm font-semibold text-gray-700 mb-3">
+                      <span class="flex items-center">
+                        <span class="material-icons w-4 h-4 mr-2 text-gray-500">photo_camera</span>
+                        Foto de Perfil
+                      </span>
+                    </label>
+                    <div class="flex items-center gap-4">
+                      <div
+                        class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center overflow-hidden border-2 border-gray-200">
+                        <img id="preview-foto" class="w-full h-full object-cover hidden" alt="Preview">
+                        <span class="material-icons text-gray-400 text-2xl" id="placeholder-foto">person</span>
+                      </div>
+                      <div class="flex-1">
+                        <input type="file" id="paciente-foto-perfil" accept="image/*"
+                          class="input-enhanced w-full p-4 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <p class="text-xs text-gray-500 mt-2">JPG, PNG o GIF. Máximo 2MB.</p>
+                      </div>
+                    </div>
+                  </div>
 
-                <div class="form-group">
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    <span class="flex items-center gap-2">
-                      <span class="material-icons text-gray-500 text-lg">tag</span>
-                      Número *
-                    </span>
-                  </label>
-                  <input type="text" id="paciente-numero" required
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    placeholder="1234">
-                  <div class="error text-red-500 text-sm mt-1 hidden" id="error-numero"></div>
-                </div>
+                  <div class="form-group">
+                    <label class="block text-sm font-semibold text-gray-700 mb-3" for="paciente-nombre">
+                      <span class="flex items-center">
+                        <span class="material-icons w-4 h-4 mr-2 text-gray-500">person</span>
+                        Nombre *
+                      </span>
+                    </label>
+                    <input type="text" id="paciente-nombre" required
+                      class="input-enhanced w-full p-4 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Nombre del paciente">
+                    <div class="error text-red-500 text-sm mt-2 flex items-center hidden" id="error-nombre"></div>
+                  </div>
 
-                <div class="form-group">
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    <span class="flex items-center gap-2">
-                      <span class="material-icons text-gray-500 text-lg">layers</span>
-                      Piso
-                    </span>
-                  </label>
-                  <input type="text" id="paciente-piso"
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    placeholder="5">
-                </div>
+                  <div class="form-group">
+                    <label class="block text-sm font-semibold text-gray-700 mb-3" for="paciente-apellido">
+                      <span class="flex items-center">
+                        <span class="material-icons w-4 h-4 mr-2 text-gray-500">person</span>
+                        Apellido *
+                      </span>
+                    </label>
+                    <input type="text" id="paciente-apellido" required
+                      class="input-enhanced w-full p-4 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Apellido del paciente">
+                    <div class="error text-red-500 text-sm mt-2 flex items-center hidden" id="error-apellido"></div>
+                  </div>
 
-                <div class="form-group">
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    <span class="flex items-center gap-2">
-                      <span class="material-icons text-gray-500 text-lg">door_front</span>
-                      Departamento
-                    </span>
-                  </label>
-                  <input type="text" id="paciente-departamento"
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    placeholder="A">
-                </div>
+                  <div class="form-group">
+                    <label class="block text-sm font-semibold text-gray-700 mb-3" for="paciente-dni">
+                      <span class="flex items-center">
+                        <span class="material-icons w-4 h-4 mr-2 text-gray-500">badge</span>
+                        DNI *
+                      </span>
+                    </label>
+                    <input type="text" id="paciente-dni" required
+                      class="input-enhanced w-full p-4 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="12345678">
+                    <div class="error text-red-500 text-sm mt-2 flex items-center hidden" id="error-dni"></div>
+                  </div>
 
-                <div class="form-group">
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    <span class="flex items-center gap-2">
-                      <span class="material-icons text-gray-500 text-lg">location_city</span>
-                      Localidad *
-                    </span>
-                  </label>
-                  <input type="text" id="paciente-localidad" required
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    placeholder="Buenos Aires">
-                  <div class="error text-red-500 text-sm mt-1 hidden" id="error-localidad"></div>
-                </div>
+                  <div class="form-group">
+                    <label class="block text-sm font-semibold text-gray-700 mb-3" for="paciente-fecha-nacimiento">
+                      <span class="flex items-center">
+                        <span class="material-icons w-4 h-4 mr-2 text-gray-500">cake</span>
+                        Fecha de Nacimiento *
+                      </span>
+                    </label>
+                    <input type="date" id="paciente-fecha-nacimiento" required
+                      class="input-enhanced w-full p-4 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <div class="error text-red-500 text-sm mt-2 flex items-center hidden" id="error-fecha-nacimiento">
+                    </div>
+                  </div>
 
-                <div class="form-group">
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    <span class="flex items-center gap-2">
-                      <span class="material-icons text-gray-500 text-lg">map</span>
-                      Provincia *
-                    </span>
-                  </label>
-                  <select id="paciente-provincia" required
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
-                    <option value="">Seleccionar</option>
-                    <option value="Buenos Aires">Buenos Aires</option>
-                    <option value="CABA">Ciudad Autónoma de Buenos Aires</option>
-                    <option value="Catamarca">Catamarca</option>
-                    <option value="Chaco">Chaco</option>
-                    <option value="Chubut">Chubut</option>
-                    <option value="Córdoba">Córdoba</option>
-                    <option value="Corrientes">Corrientes</option>
-                    <option value="Entre Ríos">Entre Ríos</option>
-                    <option value="Formosa">Formosa</option>
-                    <option value="Jujuy">Jujuy</option>
-                    <option value="La Pampa">La Pampa</option>
-                    <option value="La Rioja">La Rioja</option>
-                    <option value="Mendoza">Mendoza</option>
-                    <option value="Misiones">Misiones</option>
-                    <option value="Neuquén">Neuquén</option>
-                    <option value="Río Negro">Río Negro</option>
-                    <option value="Salta">Salta</option>
-                    <option value="San Juan">San Juan</option>
-                    <option value="San Luis">San Luis</option>
-                    <option value="Santa Cruz">Santa Cruz</option>
-                    <option value="Santa Fe">Santa Fe</option>
-                    <option value="Santiago del Estero">Santiago del Estero</option>
-                    <option value="Tierra del Fuego">Tierra del Fuego</option>
-                    <option value="Tucumán">Tucumán</option>
-                  </select>
-                  <div class="error text-red-500 text-sm mt-1 hidden" id="error-provincia"></div>
-                </div>
-              </div>
-            </div>
+                  <div class="form-group">
+                    <label class="block text-sm font-semibold text-gray-700 mb-3" for="paciente-genero">
+                      <span class="flex items-center">
+                        <span class="material-icons w-4 h-4 mr-2 text-gray-500">wc</span>
+                        Género
+                      </span>
+                    </label>
+                    <select id="paciente-genero"
+                      class="input-enhanced w-full p-4 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                      <option value="">Seleccionar</option>
+                      <option value="masculino">Masculino</option>
+                      <option value="femenino">Femenino</option>
+                      <option value="otro">Otro</option>
+                      <option value="prefiero-no-decir">Prefiero no decir</option>
+                    </select>
+                  </div>
 
-            <!-- Información Médica -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <div class="flex items-center gap-3 mb-6">
-                <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-                  <span class="material-icons text-red-600 text-lg">medical_services</span>
-                </div>
-                <div>
-                  <h3 class="text-lg font-semibold text-gray-900">Información Médica</h3>
-                  <p class="text-sm text-gray-600">Datos de salud y cobertura</p>
-                </div>
-              </div>
+                  <div class="form-group">
+                    <label class="block text-sm font-semibold text-gray-700 mb-3" for="paciente-parentesco">
+                      <span class="flex items-center">
+                        <span class="material-icons w-4 h-4 mr-2 text-gray-500">family_restroom</span>
+                        Parentesco *
+                      </span>
+                    </label>
+                    <select id="paciente-parentesco" required
+                      class="input-enhanced w-full p-4 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                      <option value="">Seleccionar</option>
+                      <option value="Paciente directo">Paciente directo</option>
+                      <option value="Hijo/a">Hijo/a</option>
+                      <option value="Padre/Madre">Padre/Madre</option>
+                      <option value="Esposo/a">Esposo/a</option>
+                      <option value="Hermano/a">Hermano/a</option>
+                      <option value="Abuelo/a">Abuelo/a</option>
+                      <option value="Nieto/a">Nieto/a</option>
+                      <option value="Otro familiar">Otro familiar</option>
+                      <option value="Tutor legal">Tutor legal</option>
+                    </select>
+                    <div class="error text-red-500 text-sm mt-2 flex items-center hidden" id="error-parentesco"></div>
+                  </div>
 
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="form-group">
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    <span class="flex items-center gap-2">
-                      <span class="material-icons text-gray-500 text-lg">local_hospital</span>
-                      Diagnóstico Principal
-                    </span>
-                  </label>
-                  <input type="text" id="paciente-diagnostico-principal"
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    placeholder="Diagnóstico principal">
-                </div>
+                  <div class="form-group">
+                    <label class="block text-sm font-semibold text-gray-700 mb-3" for="paciente-telefono">
+                      <span class="flex items-center">
+                        <span class="material-icons w-4 h-4 mr-2 text-gray-500">phone</span>
+                        Teléfono
+                      </span>
+                    </label>
+                    <input type="tel" id="paciente-telefono"
+                      class="input-enhanced w-full p-4 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="+54 9 11 1234-5678">
+                  </div>
 
-                <div class="form-group">
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    <span class="flex items-center gap-2">
-                      <span class="material-icons text-gray-500 text-lg">card_membership</span>
-                      Obra Social
-                    </span>
-                  </label>
-                  <input type="text" id="paciente-obra-social"
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    placeholder="OSDE, Swiss Medical, etc.">
-                </div>
-
-                <div class="form-group">
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    <span class="flex items-center gap-2">
-                      <span class="material-icons text-gray-500 text-lg">confirmation_number</span>
-                      Número de Afiliado
-                    </span>
-                  </label>
-                  <input type="text" id="paciente-numero-afiliado"
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    placeholder="Número de afiliado">
-                </div>
-
-                <div class="form-group">
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    <span class="flex items-center gap-2">
-                      <span class="material-icons text-gray-500 text-lg">toggle_on</span>
-                      Estado
-                    </span>
-                  </label>
-                  <select id="paciente-estado"
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
-                    <option value="activo">Activo</option>
-                    <option value="inactivo">Inactivo</option>
-                    <option value="alta">Alta médica</option>
-                  </select>
-                </div>
-
-                <div class="md:col-span-2 form-group">
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    <span class="flex items-center gap-2">
-                      <span class="material-icons text-gray-500 text-lg">warning</span>
-                      Alergias
-                    </span>
-                  </label>
-                  <input type="text" id="paciente-alergias"
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    placeholder="Separar con comas: penicilina, nueces, etc.">
-                  <p class="text-xs text-gray-500 mt-1">Separar múltiples alergias con comas</p>
-                </div>
-
-                <div class="md:col-span-2 form-group">
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    <span class="flex items-center gap-2">
-                      <span class="material-icons text-gray-500 text-lg">note</span>
-                      Observaciones
-                    </span>
-                  </label>
-                  <textarea id="paciente-observaciones" rows="3"
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none"
-                    placeholder="Observaciones adicionales sobre el paciente..."></textarea>
-                </div>
-              </div>
-            </div>
-
-            <!-- Botones de acción -->
-            <div class="flex flex-col sm:flex-row gap-4 sm:justify-end pt-6">
-              <button type="button" id="btn-cancelar-form-bottom"
-                class="w-full sm:w-auto px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">
-                <span class="flex items-center justify-center gap-2">
-                  <span class="material-icons text-lg">close</span>
-                  Cancelar
-                </span>
-              </button>
-              <button type="submit" id="btn-guardar-form"
-                class="w-full sm:w-auto bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium">
-                <span class="flex items-center justify-center gap-2">
-                  <span class="material-icons text-lg">save</span>
-                  Guardar Paciente
-                </span>
-              </button>
-            </div>
-
-          </form>
-        </div>
-      </div>
+                  <div class="form-group">
+                    <label class="block text-sm font-semibold text-gray-700 mb-3" for="paciente-email">
+                      <span class="flex items-center">
+                        <span class="material-icons w-4 h-4 mr-2 text-gray-500">email</span>
+                        Email
+                      </span>
+                    </label>
+                    <input type="email" id="paciente-email"
+                      class="input-enhanced w-full p-4 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="paciente@email.com">
+                  </div>
 
                   <!-- Dirección completa -->
                   <div class="md:col-span-2">
@@ -1583,7 +1378,7 @@
                     <span class="material-icons text-sm mr-1">person</span>
                     Nombre completo
                   </label>
-                  <input type="text" id="nombre-completo" value=""
+                  <input type="text" id="nombre-completo" value="María González"
                     class="input-enhanced w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
                 <div>
@@ -1591,7 +1386,7 @@
                     <span class="material-icons text-sm mr-1">badge</span>
                     DNI
                   </label>
-                  <input type="text" id="dni" value=""
+                  <input type="text" id="dni" value="35.123.456"
                     class="input-enhanced w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
               </div>
@@ -1602,7 +1397,7 @@
                     <span class="material-icons text-sm mr-1">email</span>
                     Email
                   </label>
-                  <input type="email" id="email" value=""
+                  <input type="email" id="email" value="maria.gonzalez@email.com"
                     class="input-enhanced w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
                 <div>
@@ -1610,7 +1405,7 @@
                     <span class="material-icons text-sm mr-1">phone</span>
                     Teléfono
                   </label>
-                  <input type="tel" id="telefono" value=""
+                  <input type="tel" id="telefono" value="+54 9 11 5678-9012"
                     class="input-enhanced w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
               </div>
@@ -1620,7 +1415,7 @@
                   <span class="material-icons text-sm mr-1">location_on</span>
                   Dirección
                 </label>
-                <input type="text" id="direccion" value=""
+                <input type="text" id="direccion" value="Av. Santa Fe 1234, CABA"
                   class="input-enhanced w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
               </div>
 
@@ -1630,7 +1425,7 @@
                     <span class="material-icons text-sm mr-1">cake</span>
                     Fecha de nacimiento
                   </label>
-                  <input type="date" id="fecha-nacimiento" value=""
+                  <input type="date" id="fecha-nacimiento" value="1985-03-15"
                     class="input-enhanced w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 </div>
                 <div>
@@ -1669,11 +1464,6 @@
           <p class="text-gray-600 text-sm">Datos sobre tu situación familiar y personas a cargo</p>
         </div>
 
-        <!-- Resumen automático de información familiar -->
-        <div id="family-summary">
-          <!-- Se llenará dinámicamente por ProfileManager -->
-        </div>
-
         <form id="form-info-familiar" class="space-y-4 md:space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <div>
@@ -1695,7 +1485,7 @@
                 <span class="material-icons text-sm mr-1">work</span>
                 Ocupación
               </label>
-              <input type="text" id="ocupacion" value=""
+              <input type="text" id="ocupacion" value="Contadora"
                 class="input-enhanced w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
             </div>
           </div>
@@ -1705,32 +1495,25 @@
               <label class="block text-sm font-medium text-gray-700 mb-2">
                 <span class="material-icons text-sm mr-1">supervisor_account</span>
                 Cantidad de hijos/personas a cargo
-                <span class="text-xs text-blue-600 ml-1">(calculado automáticamente)</span>
               </label>
-              <input type="number" id="cantidad-hijos" value="0" min="0" readonly
-                class="input-enhanced w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 cursor-not-allowed">
-              <p class="text-xs text-gray-500 mt-1">Este valor se calcula basado en tus pacientes registrados con
-                parentesco "Hijo/a"</p>
+              <input type="number" id="cantidad-hijos" value="2" min="0"
+                class="input-enhanced w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
                 <span class="material-icons text-sm mr-1">health_and_safety</span>
                 Obra social principal
-                <span class="text-xs text-blue-600 ml-1">(sugerida automáticamente)</span>
               </label>
               <select id="obra-social"
                 class="input-enhanced w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                 <option value="">Seleccionar obra social</option>
-                <option value="osde">OSDE</option>
+                <option value="osde" selected>OSDE</option>
                 <option value="swiss-medical">Swiss Medical</option>
                 <option value="omint">OMINT</option>
                 <option value="galeno">Galeno</option>
                 <option value="medicus">Medicus</option>
-                <option value="ospra">OSPRA</option>
                 <option value="otra">Otra</option>
               </select>
-              <p class="text-xs text-gray-500 mt-1">Se sugiere la obra social más común entre tus pacientes registrados
-              </p>
             </div>
           </div>
 
@@ -1740,9 +1523,9 @@
               Contacto de emergencia
             </label>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input type="text" id="contacto-emergencia-nombre" placeholder="Nombre completo" value=""
+              <input type="text" id="contacto-emergencia-nombre" placeholder="Nombre completo" value="Carlos González"
                 class="input-enhanced w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-              <input type="tel" id="contacto-emergencia-telefono" placeholder="Teléfono" value=""
+              <input type="tel" id="contacto-emergencia-telefono" placeholder="Teléfono" value="+54 9 11 9876-5432"
                 class="input-enhanced w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
             </div>
           </div>
@@ -1971,7 +1754,6 @@
 <script src="../js/perfil-manager.js"></script>
 <script src="../js/app.js"></script>
 <script src="../js/patient-manager.js"></script>
-<script src="../js/profile-manager.js"></script>
 </body>
 
 </html>
