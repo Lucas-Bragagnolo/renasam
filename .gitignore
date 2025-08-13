@@ -1,0 +1,18 @@
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de configuración del editor
+.vscode/
+.idea/
+
+# Archivos temporales
+*.tmp
+*.log
+
+# Dependencias (si usas npm)
+node_modules/
+
+# Archivos de backup
+*.bak
+backup_*

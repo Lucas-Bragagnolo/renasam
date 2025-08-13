@@ -18,6 +18,7 @@ class SearchManager {
         step1: document.getElementById("search-step-1"),
         step2: document.getElementById("search-step-2"),
         step3: document.getElementById("search-step-3"),
+        step4: document.getElementById("search-step-4"),
         locationInput: document.getElementById("ubicacion"),
         specialtyInput: document.getElementById("especialidad-input"),
         continueBtn: document.getElementById("btn-continuar"),
@@ -118,6 +119,9 @@ class SearchManager {
     selectRecentLocation(location) {
       if (this.elements.locationInput) {
         this.elements.locationInput.value = location
+        
+        // Geocodificar inmediatamente la ubicación seleccionada
+        this.geocodeLocation(location)
       }
     }
   
@@ -190,19 +194,36 @@ class SearchManager {
         const geocoder = new google.maps.Geocoder()
   
         geocoder.geocode({ address: address }, (results, status) => {
+          console.log(`Geocodificando: "${address}" - Status: ${status}`);
+          
           if (status === "OK" && results[0]) {
-            this.searchCenter = {
-              lat: results[0].geometry.location.lat(),
-              lng: results[0].geometry.location.lng(),
-            }
+            const lat = results[0].geometry.location.lat()
+            const lng = results[0].geometry.location.lng()
+            
+            this.searchCenter = { lat: lat, lng: lng }
+            
+            // Actualizar sessionStorage con las coordenadas de la ubicación seleccionada
+            sessionStorage.setItem("ubicacion_lat", lat.toFixed(4))
+            sessionStorage.setItem("ubicacion_lon", lng.toFixed(4))
+            
+            console.log(`✅ Ubicación geocodificada exitosamente: ${address} -> ${lat}, ${lng}`)
+            console.log(`📍 Coordenadas guardadas en sessionStorage: lat=${lat.toFixed(4)}, lng=${lng.toFixed(4)}`)
           } else {
             // Fallback a Buenos Aires si no se puede geocodificar
             this.searchCenter = { lat: -34.6037, lng: -58.3816 }
+            sessionStorage.setItem("ubicacion_lat", "-34.6037")
+            sessionStorage.setItem("ubicacion_lon", "-58.3816")
+            
+            console.warn(`❌ No se pudo geocodificar: ${address} (Status: ${status}), usando Buenos Aires como fallback`)
           }
         })
       } else {
         // Fallback a Buenos Aires
         this.searchCenter = { lat: -34.6037, lng: -58.3816 }
+        sessionStorage.setItem("ubicacion_lat", "-34.6037")
+        sessionStorage.setItem("ubicacion_lon", "-58.3816")
+        
+        console.warn("Google Maps no disponible, usando Buenos Aires como fallback")
       }
     }
   
@@ -238,7 +259,7 @@ class SearchManager {
      */
     showStep(stepNumber) {
       // Ocultar todos los pasos
-      ;[this.elements.step1, this.elements.step2, this.elements.step3].forEach((step) => {
+      ;[this.elements.step1, this.elements.step2, this.elements.step3, this.elements.step4].forEach((step) => {
         if (step) {
           step.classList.add("hidden")
           step.classList.remove("active")
@@ -331,24 +352,44 @@ class SearchManager {
     }
   
     /**
-     * Carga los resultados de búsqueda
+     * Carga los resultados de búsqueda en zona de 10km
      */
     loadResults() {
       if (!this.elements.professionalsContainer) return
+
+      // Obtener datos del paciente seleccionado
+      const pacienteSeleccionado = window.pacienteElegido || window.busquedaPacientes?.getPacienteSeleccionado();
   
-      const professionals = window.dataManager.filtrarProfesionales({
+      // Buscar profesionales en zona de 10km
+      const professionals = window.dataManager.buscarProfesionalesEnZona({
+        ubicacion: this.selectedLocation,
         especialidad: this.selectedSpecialty,
-      })
+        paciente: pacienteSeleccionado
+      });
   
       const sortedProfessionals = window.dataManager.ordenarProfesionales(professionals, "rating")
   
       this.elements.professionalsContainer.innerHTML = sortedProfessionals
         .map((prof) => this.createProfessionalCard(prof))
         .join("")
+
+      // Mostrar mensaje si no hay resultados
+      if (sortedProfessionals.length === 0) {
+        this.elements.professionalsContainer.innerHTML = `
+          <div class="text-center py-12">
+            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span class="material-icons text-gray-400 text-2xl">search_off</span>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">No se encontraron profesionales</h3>
+            <p class="text-gray-600 mb-4">No hay profesionales de ${this.selectedSpecialty} disponibles en un radio de 10km de ${this.selectedLocation}</p>
+            <p class="text-sm text-gray-500">Intenta ampliar tu búsqueda o seleccionar otra especialidad</p>
+          </div>
+        `;
+      }
     }
   
     /**
-     * Crea una tarjeta de profesional
+     * Crea una tarjeta de profesional (sin ubicación exacta por privacidad)
      */
     createProfessionalCard(professional) {
       return `
@@ -366,11 +407,14 @@ class SearchManager {
           </div>
           <div class="card-subinfo mt-2">
             <p class="my-1 flex items-center text-gray-600 text-sm">
-              <span class="icon mr-1.5">📍</span> ${professional.zona || "Zona Centro"} 
-              <span class="distancia text-gray-400 text-xs ml-1.5">(~${professional.distancia} km)</span>
+              <span class="icon mr-1.5">📍</span> Disponible en la zona de búsqueda
+              <span class="distancia text-gray-400 text-xs ml-1.5">(dentro de 10 km)</span>
             </p>
             <p class="my-1 flex items-center text-gray-600 text-sm">
               <span class="icon mr-1.5">📅</span> ${professional.disponibilidad}
+            </p>
+            <p class="my-1 flex items-center text-blue-600 text-xs">
+              <span class="icon mr-1.5">🔒</span> Ubicación exacta disponible al contactar
             </p>
           </div>
           <div class="obras-sociales mt-2">
@@ -388,7 +432,7 @@ class SearchManager {
           <div class="card-actions flex justify-center items-center mt-4">
             <button class="ver-perfil flex items-center justify-center bg-sky-500 text-white py-3 px-6 rounded-lg text-sm font-semibold cursor-pointer transition-colors duration-200 hover:bg-sky-600 w-full" 
                     onclick="searchManager.verPerfil(${professional.id})">
-              👨‍⚕️ Ver perfil completo
+              👨‍⚕️ Ver perfil y contactar
             </button>
           </div>
         </div>
@@ -515,9 +559,10 @@ class SearchManager {
             <h3 class="font-semibold text-gray-800 mb-2">Zona de Búsqueda</h3>
             <p class="text-sm text-gray-600 mb-2">📍 ${this.selectedLocation}</p>
             <p class="text-sm text-gray-600 mb-2">🔍 ${this.selectedSpecialty}</p>
-            <p class="text-xs text-gray-500">Radio de búsqueda: 10 km</p>
+            <p class="text-xs text-gray-500 mb-2">Radio de búsqueda: 10 km</p>
             <div class="mt-2 p-2 bg-blue-50 rounded">
-              <p class="text-xs text-blue-700">Los profesionales se encuentran dentro de esta área por privacidad</p>
+              <p class="text-xs text-blue-700">Los profesionales mostrados están dentro de esta área.</p>
+              <p class="text-xs text-blue-700">Las ubicaciones exactas se revelan al contactar.</p>
             </div>
           </div>
         `,

@@ -103,6 +103,10 @@ class DataManager {
      */
     generarProfesionales(cantidad) {
       const profesionales = []
+      const zonasDisponibles = [
+        "Zona Norte", "Zona Sur", "Centro", "Zona Oeste", "Zona Este",
+        "Microcentro", "Barrio Norte", "Palermo", "Belgrano", "San Telmo"
+      ]
   
       for (let i = 0; i < cantidad; i++) {
         const nombre = this.nombres[Math.floor(Math.random() * this.nombres.length)]
@@ -112,14 +116,15 @@ class DataManager {
           especialidad: this.especialidades[Math.floor(Math.random() * this.especialidades.length)],
           rating: (Math.random() * 1.5 + 3.5).toFixed(1),
           reviewCount: Math.floor(Math.random() * 200) + 10,
-          // Remover direccion exacta - solo mostrar zona general
-          zona: "Zona Norte", // o "Zona Sur", "Centro", etc.
-          distancia: (Math.random() * 10 + 0.5).toFixed(1),
+          // Solo zona general por privacidad
+          zona: zonasDisponibles[Math.floor(Math.random() * zonasDisponibles.length)],
+          // Distancia aproximada dentro del radio de búsqueda (10km)
+          distancia: (Math.random() * 9 + 1).toFixed(1),
           disponibilidad: this.disponibilidades[Math.floor(Math.random() * this.disponibilidades.length)],
           obrasSociales: this.generarObrasSocialesAleatorias(),
-          // Coordenadas para el área de búsqueda (no exactas)
-          lat: -34.6037 + (Math.random() - 0.5) * 0.2,
-          lng: -58.3816 + (Math.random() - 0.5) * 0.2,
+          // NO incluir coordenadas exactas por privacidad
+          // Las coordenadas se revelarán solo al contactar al profesional
+          enZonaDeBusqueda: true, // Indica que está dentro del radio de 10km
           foto: `/placeholder.svg?height=60&width=60&text=${encodeURIComponent(nombre.split(" ")[1] || "Dr")}`,
         }
   
@@ -167,7 +172,39 @@ class DataManager {
     }
   
     /**
-     * Filtra profesionales por criterios
+     * Simula búsqueda de profesionales en un radio de 10km
+     * @param {Object} criterios - Criterios de búsqueda
+     * @param {string} criterios.ubicacion - Ubicación de búsqueda
+     * @param {string} criterios.especialidad - Especialidad buscada
+     * @param {Object} criterios.paciente - Datos del paciente
+     * @returns {Array} Profesionales disponibles en la zona
+     */
+    buscarProfesionalesEnZona(criterios = {}) {
+      console.log('Buscando profesionales en zona de 10km:', criterios);
+      
+      // Simular búsqueda en radio de 10km
+      let profesionalesEnZona = this.profesionales.filter(prof => {
+        // Todos los profesionales generados están "en zona" por defecto
+        return prof.enZonaDeBusqueda === true;
+      });
+
+      // Filtrar por especialidad si se especifica
+      if (criterios.especialidad) {
+        profesionalesEnZona = profesionalesEnZona.filter(prof => 
+          prof.especialidad.toLowerCase().includes(criterios.especialidad.toLowerCase())
+        );
+      }
+
+      // Simular que algunos profesionales pueden no estar disponibles
+      // (para hacer más realista la búsqueda)
+      const disponibles = profesionalesEnZona.filter(() => Math.random() > 0.2); // 80% disponibilidad
+
+      console.log(`Encontrados ${disponibles.length} profesionales en la zona`);
+      return disponibles;
+    }
+
+    /**
+     * Filtra profesionales por criterios (función original mantenida para compatibilidad)
      */
     filtrarProfesionales(filtros = {}) {
       let resultado = [...this.profesionales]

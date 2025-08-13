@@ -1,10 +1,11 @@
    // Variables globales para el mapa
+    let pacienteElegido = null;
     let ubicacionElegida = "";
     let especialidadElegida = "";
 
-    // Función para inicializar el mapa
+    // Función para inicializar el mapa con zona de búsqueda (sin ubicaciones exactas)
     function inicializarMapa() {
-      console.log('Inicializando mapa...');
+      console.log('Inicializando mapa con zona de búsqueda...');
       
       const mapElement = document.getElementById("mapa-profesionales");
       if (!mapElement) {
@@ -20,12 +21,15 @@
       }
 
       try {
+        // Obtener centro de búsqueda
+        const center = {
+          lat: parseFloat(sessionStorage.getItem('ubicacion_lat')) || -34.6037,
+          lng: parseFloat(sessionStorage.getItem('ubicacion_lon')) || -58.3816
+        };
+
         const mapa = new google.maps.Map(mapElement, {
-          center: {
-            lat: parseFloat(sessionStorage.getItem('ubicacion_lat')) || -34.6037,
-            lng: parseFloat(sessionStorage.getItem('ubicacion_lon')) || -58.3816
-          },
-          zoom: 12,
+          center: center,
+          zoom: 11, // Zoom apropiado para mostrar área de 10km
           styles: [
             {
               featureType: "poi",
@@ -35,53 +39,62 @@
           ]
         });
 
-        // Profesionales simulados
-        const profesionales = [
-          { nombre: "Dr. Carlos Rodríguez", lat: -34.5895, lng: -58.4068, especialidad: "Cardiología" },
-          { nombre: "Dra. Sofía Gómez", lat: -34.5638, lng: -58.4562, especialidad: "Psiquiatría" },
-          { nombre: "Dr. Francisco Pérez", lat: -34.6253, lng: -58.5161, especialidad: "Odontología" },
-          { nombre: "Dra. Ana López", lat: -34.6931, lng: -58.5946, especialidad: "Dermatología" },
-          { nombre: "Dr. Juan Pérez", lat: -34.7565, lng: -58.6531, especialidad: "Neurología" }
-        ];
-
-        // Crear marcadores
-        profesionales.forEach(pro => {
-          const marker = new google.maps.Marker({
-            position: { lat: pro.lat, lng: pro.lng },
-            map: mapa,
-            title: `${pro.nombre} - ${pro.especialidad}`,
-            icon: {
-              url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                <svg width="30" height="40" viewBox="0 0 30 40" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M15 0C6.7 0 0 6.7 0 15c0 8.3 15 25 15 25s15-16.7 15-25C30 6.7 23.3 0 15 0z" fill="#0ea5e9"/>
-                  <circle cx="15" cy="15" r="8" fill="white"/>
-                  <text x="15" y="19" text-anchor="middle" font-family="Arial" font-size="12" fill="#0ea5e9">+</text>
-                </svg>
-              `),
-              scaledSize: new google.maps.Size(30, 40),
-              anchor: new google.maps.Point(15, 40)
-            }
-          });
-
-          // Info window para cada marcador
-          const infoWindow = new google.maps.InfoWindow({
-            content: `
-              <div class="p-2">
-                <h3 class="font-semibold text-gray-800">${pro.nombre}</h3>
-                <p class="text-sm text-gray-600">${pro.especialidad}</p>
-                <button class="mt-2 bg-sky-500 text-white px-3 py-1 rounded text-sm hover:bg-sky-600">
-                  Ver perfil
-                </button>
-              </div>
-            `
-          });
-
-          marker.addListener('click', () => {
-            infoWindow.open(mapa, marker);
-          });
+        // Crear círculo de zona de búsqueda (10km de radio)
+        const searchCircle = new google.maps.Circle({
+          strokeColor: "#0ea5e9",
+          strokeOpacity: 0.8,
+          strokeWeight: 2,
+          fillColor: "#0ea5e9",
+          fillOpacity: 0.15,
+          map: mapa,
+          center: center,
+          radius: 10000 // 10km en metros
         });
 
-        console.log('Mapa inicializado correctamente');
+        // Marcador central de la zona de búsqueda
+        const centralMarker = new google.maps.Marker({
+          position: center,
+          map: mapa,
+          title: `Zona de búsqueda: ${ubicacionElegida}`,
+          icon: {
+            url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+              <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="20" cy="20" r="18" fill="#0ea5e9" stroke="white" stroke-width="4"/>
+                <text x="20" y="26" text-anchor="middle" font-family="Arial" font-size="16" fill="white" font-weight="bold">📍</text>
+              </svg>
+            `),
+            scaledSize: new google.maps.Size(40, 40),
+            anchor: new google.maps.Point(20, 20)
+          }
+        });
+
+        // Info window para la zona de búsqueda
+        const infoWindow = new google.maps.InfoWindow({
+          content: `
+            <div class="p-3 text-center">
+              <h3 class="font-semibold text-gray-800 mb-2">Zona de Búsqueda</h3>
+              <p class="text-sm text-gray-600 mb-2">📍 ${ubicacionElegida}</p>
+              <p class="text-sm text-gray-600 mb-2">🔍 ${especialidadElegida}</p>
+              <p class="text-sm text-gray-600 mb-2">👤 Para: ${pacienteElegido ? pacienteElegido.nombre + ' ' + pacienteElegido.apellido : 'Paciente'}</p>
+              <p class="text-xs text-gray-500 mb-2">Radio de búsqueda: 10 km</p>
+              <div class="mt-2 p-2 bg-blue-50 rounded">
+                <p class="text-xs text-blue-700">Los profesionales mostrados se encuentran dentro de esta área.</p>
+                <p class="text-xs text-blue-700">Las ubicaciones exactas se revelan al contactar al profesional.</p>
+              </div>
+            </div>
+          `,
+          position: center
+        });
+
+        // Mostrar info window automáticamente
+        infoWindow.open(mapa);
+
+        // Agregar evento click al marcador central
+        centralMarker.addListener('click', () => {
+          infoWindow.open(mapa, centralMarker);
+        });
+
+        console.log('Mapa con zona de búsqueda inicializado correctamente');
         
       } catch (error) {
         console.error('Error al inicializar el mapa:', error);
@@ -131,20 +144,22 @@
       const paso1 = document.getElementById("search-step-1");
       const paso2 = document.getElementById("search-step-2");
       const paso3 = document.getElementById("search-step-3");
+      const paso4 = document.getElementById("search-step-4");
 
       // Botones
+      const btnContinuarPaciente = document.getElementById("btn-continuar-paciente");
       const btnContinuar = document.getElementById("btn-continuar");
       const btnGeo = document.getElementById("btn-geo");
-      const btnBuscar = paso2?.querySelector(".continue-button");
+      const btnBuscar = paso3?.querySelector(".continue-button");
 
       // Inputs
       const inputUbicacion = document.getElementById("ubicacion");
-      const inputEspecialidad = paso2?.querySelector("input[type='text']");
+      const inputEspecialidad = paso3?.querySelector("input[type='text']");
 
       // Especialidades populares
-      const especialidades = paso2?.querySelectorAll(".tag");
-      const selectedLocation = paso2?.querySelector(".selected-location");
-      const resultadosTitulo = paso3?.querySelector(".lista-profesionales h2");
+      const especialidades = paso3?.querySelectorAll(".tag");
+      const selectedLocation = paso3?.querySelector(".selected-location");
+      const resultadosTitulo = paso4?.querySelector(".lista-profesionales h2");
 
       // Sidebar hover effect - MEJORADO
       sidebar.addEventListener('mouseenter', function() {
@@ -222,7 +237,28 @@
         });
       });
 
-      // Paso 1 -> Paso 2
+      // La carga de pacientes se maneja ahora en busqueda-pacientes.js
+
+      // Paso 1 -> Paso 2 (Selección de paciente -> Ubicación)
+      if (btnContinuarPaciente) {
+        btnContinuarPaciente.addEventListener("click", function () {
+          if (!pacienteElegido) {
+            alert("Por favor, selecciona un paciente.");
+            return;
+          }
+
+          // Mostrar paciente elegido en el paso 2
+          const selectedPatientDisplay = document.getElementById("selected-patient-display");
+          if (selectedPatientDisplay) {
+            selectedPatientDisplay.textContent = `${pacienteElegido.nombre} ${pacienteElegido.apellido}`;
+          }
+
+          // Actualizar pasos visuales
+          irAlPaso(paso1, paso2, 2);
+        });
+      }
+
+      // Paso 2 -> Paso 3 (Ubicación -> Especialidad)
       if (btnContinuar) {
         btnContinuar.addEventListener("click", function () {
           const ubicacion = inputUbicacion?.value.trim();
@@ -233,17 +269,26 @@
 
           ubicacionElegida = ubicacion;
 
-          // Mostrar ubicación elegida en el paso 2
-          if (selectedLocation) {
-            selectedLocation.textContent = "📍 " + ubicacionElegida;
+          // Geocodificar la ubicación para asegurar coordenadas correctas
+          geocodificarUbicacion(ubicacion);
+
+          // Mostrar información elegida en el paso 3
+          const selectedLocationDisplay = document.getElementById("selected-location-display");
+          const selectedPatientDisplayStep3 = document.getElementById("selected-patient-display-step3");
+          
+          if (selectedLocationDisplay) {
+            selectedLocationDisplay.textContent = ubicacionElegida;
+          }
+          if (selectedPatientDisplayStep3) {
+            selectedPatientDisplayStep3.textContent = `${pacienteElegido.nombre} ${pacienteElegido.apellido}`;
           }
 
           // Actualizar pasos visuales
-          irAlPaso(paso1, paso2, 2);
+          irAlPaso(paso2, paso3, 3);
         });
       }
 
-      // Paso 2 -> Paso 3
+      // Paso 3 -> Paso 4 (Especialidad -> Resultados)
       if (btnBuscar) {
         btnBuscar.addEventListener("click", function () {
           const especialidad = inputEspecialidad?.value.trim();
@@ -256,11 +301,22 @@
 
           // Actualizar resultados
           if (resultadosTitulo) {
-            resultadosTitulo.textContent = `Profesionales disponibles en ${ubicacionElegida} para ${especialidadElegida}`;
+            resultadosTitulo.textContent = `Profesionales de ${especialidadElegida} disponibles en la zona`;
           }
 
-          // Mostrar paso 3
-          irAlPaso(paso2, paso3, 3);
+          // Actualizar información de zona de búsqueda
+          const zonaBusquedaDisplay = document.getElementById("zona-busqueda-display");
+          const especialidadBusquedaDisplay = document.getElementById("especialidad-busqueda-display");
+          
+          if (zonaBusquedaDisplay) {
+            zonaBusquedaDisplay.textContent = ubicacionElegida;
+          }
+          if (especialidadBusquedaDisplay) {
+            especialidadBusquedaDisplay.textContent = especialidadElegida;
+          }
+
+          // Mostrar paso 4
+          irAlPaso(paso3, paso4, 4);
 
           // Inicializar mapa después de un pequeño delay para asegurar que el elemento esté visible
           setTimeout(() => {
@@ -432,3 +488,51 @@
       // Escuchar cambios de tamaño de ventana
       window.addEventListener('resize', initializeSidebarPadding);
     });
+
+    // ===== INTEGRACIÓN CON SELECCIÓN DE PACIENTES =====
+    
+    // Escuchar cuando se seleccione un paciente
+    document.addEventListener('pacienteSeleccionado', (event) => {
+      pacienteElegido = event.detail;
+      console.log('Paciente seleccionado para búsqueda:', pacienteElegido);
+    });
+
+    // ===== FUNCIÓN PARA GEOCODIFICAR UBICACIONES =====
+    
+    function geocodificarUbicacion(direccion) {
+      const google = window.google;
+      if (google && google.maps) {
+        const geocoder = new google.maps.Geocoder();
+        
+        geocoder.geocode({ address: direccion }, (results, status) => {
+          console.log(`[buscar.js] Geocodificando: "${direccion}" - Status: ${status}`);
+          
+          if (status === "OK" && results[0]) {
+            const lat = results[0].geometry.location.lat();
+            const lng = results[0].geometry.location.lng();
+            
+            // Actualizar sessionStorage con las coordenadas correctas
+            sessionStorage.setItem("ubicacion_lat", lat.toFixed(4));
+            sessionStorage.setItem("ubicacion_lon", lng.toFixed(4));
+            
+            console.log(`✅ [buscar.js] Ubicación geocodificada exitosamente: ${direccion} -> ${lat}, ${lng}`);
+            console.log(`📍 [buscar.js] Coordenadas guardadas en sessionStorage: lat=${lat.toFixed(4)}, lng=${lng.toFixed(4)}`);
+          } else {
+            console.warn(`❌ [buscar.js] No se pudo geocodificar: ${direccion} (Status: ${status})`);
+            // Mantener coordenadas por defecto si ya existen
+            if (!sessionStorage.getItem("ubicacion_lat")) {
+              sessionStorage.setItem("ubicacion_lat", "-34.6037");
+              sessionStorage.setItem("ubicacion_lon", "-58.3816");
+              console.log(`🔄 [buscar.js] Usando coordenadas por defecto de Buenos Aires`);
+            }
+          }
+        });
+      } else {
+        console.warn("Google Maps no disponible para geocodificación");
+        // Mantener coordenadas por defecto si ya existen
+        if (!sessionStorage.getItem("ubicacion_lat")) {
+          sessionStorage.setItem("ubicacion_lat", "-34.6037");
+          sessionStorage.setItem("ubicacion_lon", "-58.3816");
+        }
+      }
+    }

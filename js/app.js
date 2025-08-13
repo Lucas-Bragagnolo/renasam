@@ -71,6 +71,11 @@ class App {
       if (!window.searchManager) {
         throw new Error("SearchManager no está disponible")
       }
+
+      // PerfilManager se inicializa automáticamente
+      if (window.perfilManager) {
+        console.log("ℹ️ PerfilManager inicializado correctamente")
+      }
   
       // PatientManager se inicializará de forma diferida
       console.log("ℹ️ PatientManager se inicializará cuando la API esté disponible")

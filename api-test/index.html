@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Prueba de APIs - RENASAM</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .api-section {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            background: #f8f9fa;
+        }
+        .api-header {
+            background: #007bff;
+            color: white;
+            padding: 15px;
+            border-radius: 8px 8px 0 0;
+            font-weight: bold;
+        }
+        .api-body {
+            padding: 20px;
+        }
+        .response-area {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            border-radius: 4px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .method-badge {
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .method-get { background: #28a745; color: white; }
+        .method-post { background: #007bff; color: white; }
+        .method-put { background: #ffc107; color: black; }
+        .method-delete { background: #dc3545; color: white; }
+        .status-success { color: #28a745; }
+        .status-error { color: #dc3545; }
+        .json-input {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="mb-4">
+                    <i class="fas fa-flask"></i> Panel de Prueba de APIs - RENASAM
+                </h1>
+                
+                <!-- Auth Token Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-warning">
+                        <h5 class="mb-0"><i class="fas fa-key"></i> Configuración de Autenticación</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <label class="form-label">Auth Token:</label>
+                                <input type="text" id="authToken" class="form-control" placeholder="Ingresa tu auth_token aquí">
+                            </div>
+                            <div class="col-md-4 d-flex align-items-end">
+                                <button class="btn btn-info" onclick="loadTokenFromStorage()">
+                                    <i class="fas fa-download"></i> Cargar desde Storage
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Solicitantes APIs -->
+            <div class="col-lg-6">
+                <div class="api-section">
+                    <div class="api-header">
+                        <i class="fas fa-users"></i> APIs de Solicitantes
+                    </div>
+                    <div class="api-body">
+                        
+                        <!-- Login -->
+                        <div class="mb-4">
+                            <h6><span class="method-badge method-post">POST</span> /solicitantes/login</h6>
+                            <div class="mb-2">
+                                <label class="form-label">Email:</label>
+                                <input type="email" id="loginEmail" class="form-control" value="test@example.com">
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label">Password:</label>
+                                <input type="password" id="loginPassword" class="form-control" value="123456">
+                            </div>
+                            <button class="btn btn-primary btn-sm" onclick="testLogin()">
+                                <i class="fas fa-play"></i> Probar Login
+                            </button>
+                        </div>
+
+                        <!-- Consulta Solicitante -->
+                        <div class="mb-4">
+                            <h6><span class="method-badge method-post">POST</span> /solicitantes/consulta_solicitante</h6>
+                            <p class="small text-muted">Obtiene datos del solicitante y sus pacientes</p>
+                            <button class="btn btn-primary btn-sm" onclick="testConsultaSolicitante()">
+                                <i class="fas fa-play"></i> Probar Consulta
+                            </button>
+                        </div>
+
+                        <!-- Registro Solicitante -->
+                        <div class="mb-4">
+                            <h6><span class="method-badge method-post">POST</span> /solicitantes/registro</h6>
+                            <button class="btn btn-primary btn-sm" onclick="testRegistroSolicitante()">
+                                <i class="fas fa-play"></i> Probar Registro
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pacientes APIs -->
+            <div class="col-lg-6">
+                <div class="api-section">
+                    <div class="api-header">
+                        <i class="fas fa-user-injured"></i> APIs de Pacientes
+                    </div>
+                    <div class="api-body">
+                        
+                        <!-- Crear Paciente -->
+                        <div class="mb-4">
+                            <h6><span class="method-badge method-post">POST</span> /pacientes/agregar</h6>
+                            <button class="btn btn-primary btn-sm" onclick="testCrearPaciente()">
+                                <i class="fas fa-play"></i> Probar Crear
+                            </button>
+                        </div>
+
+                        <!-- Modificar Paciente -->
+                        <div class="mb-4">
+                            <h6><span class="method-badge method-put">PUT</span> /pacientes/modificar/:id</h6>
+                            <div class="mb-2">
+                                <label class="form-label">ID del Paciente:</label>
+                                <input type="number" id="pacienteId" class="form-control" value="1">
+                            </div>
+                            <button class="btn btn-warning btn-sm" onclick="testModificarPaciente()">
+                                <i class="fas fa-play"></i> Probar Modificar
+                            </button>
+                        </div>
+
+                        <!-- Eliminar Paciente -->
+                        <div class="mb-4">
+                            <h6><span class="method-badge method-delete">DELETE</span> /pacientes/borrar/:id</h6>
+                            <div class="mb-2">
+                                <label class="form-label">ID del Paciente:</label>
+                                <input type="number" id="deleteId" class="form-control" value="1">
+                            </div>
+                            <button class="btn btn-danger btn-sm" onclick="testEliminarPaciente()">
+                                <i class="fas fa-play"></i> Probar Eliminar
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Response Area -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-terminal"></i> Respuesta de la API
+                            <button class="btn btn-sm btn-outline-secondary float-end" onclick="clearResponse()">
+                                <i class="fas fa-trash"></i> Limpiar
+                            </button>
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="responseArea" class="response-area">
+                            Aquí aparecerán las respuestas de las APIs...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="api-tester.js"></script>
+</body>
+</html>

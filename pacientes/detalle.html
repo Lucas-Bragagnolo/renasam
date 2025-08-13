@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Paciente - Cartilla Salud Mental</title>
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Fuente Inter para mejor legibilidad -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- CSS personalizado -->
+    <link rel="stylesheet" href="../css/patient-detail.css">
+
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        /* Configuración de Tailwind personalizada */
+        .card-shadow {
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+
+        .card-shadow-hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Transiciones suaves */
+        .transition-smooth {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Estados de focus mejorados */
+        .focus-ring:focus {
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            border-color: #3b82f6;
+        }
+
+        /* Tabs personalizadas */
+        .tab-active {
+            border-bottom: 2px solid #3b82f6;
+            color: #3b82f6;
+            background-color: #eff6ff;
+        }
+
+        /* Animaciones para el contenido de tabs */
+        .tab-content {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mejoras de accesibilidad */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Estados de carga */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        /* Responsive breakpoints personalizados */
+        @media (max-width: 640px) {
+            .mobile-stack>* {
+                width: 100% !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header con navegación -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Botón volver -->
+                <button id="btn-volver"
+                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus-ring transition-smooth"
+                    aria-label="Volver a la lista de pacientes">
+                    <span class="material-icons text-lg">arrow_back</span>
+                    <span class="hidden sm:inline">Volver</span>
+                </button>
+
+                <!-- Título -->
+                <div class="flex-1 text-center">
+                    <h1 class="text-lg font-semibold text-gray-900">Detalle del Paciente</h1>
+                </div>
+
+                <!-- Acciones -->
+                <div class="flex items-center gap-2">
+                    <button id="btn-editar"
+                        class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 focus-ring transition-smooth"
+                        aria-label="Editar información del paciente">
+                        <span class="material-icons text-lg">edit</span>
+                        <span class="hidden sm:inline">Editar</span>
+                    </button>
+
+                    <button id="btn-menu"
+                        class="inline-flex items-center justify-center w-10 h-10 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg focus-ring transition-smooth"
+                        aria-label="Más opciones" aria-expanded="false" aria-haspopup="true">
+                        <span class="material-icons">more_vert</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <!-- Información del paciente (header) -->
+        <section class="bg-white rounded-xl card-shadow mb-6 overflow-hidden" aria-labelledby="patient-info-title">
+            <div class="p-6">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                    <!-- Avatar -->
+                    <div class="flex-shrink-0">
+                        <div
+                            class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white text-xl font-semibold">
+                            <span id="patient-initials">--</span>
+                        </div>
+                    </div>
+
+                    <!-- Información básica -->
+                    <div class="flex-1 min-w-0">
+                        <h2 id="patient-info-title" class="text-xl font-semibold text-gray-900 mb-1">
+                            <span id="patient-name">Cargando...</span>
+                        </h2>
+                        <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                            <span class="flex items-center gap-1">
+                                <span class="material-icons text-sm">badge</span>
+                                DNI: <span id="patient-dni">--</span>
+                            </span>
+                            <span class="flex items-center gap-1">
+                                <span class="material-icons text-sm">cake</span>
+                                <span id="patient-age">--</span> años
+                            </span>
+                            <span class="flex items-center gap-1">
+                                <span class="material-icons text-sm">person</span>
+                                <span id="patient-gender">--</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Estado -->
+                    <div class="flex-shrink-0">
+                        <span id="patient-status"
+                            class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            Activo
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navegación por tabs -->
+        <nav class="bg-white rounded-xl card-shadow mb-6 overflow-hidden" aria-label="Secciones del paciente">
+            <div class="border-b border-gray-200">
+                <div class="flex overflow-x-auto">
+                    <button
+                        class="tab-button flex-shrink-0 px-6 py-4 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 border-b-2 border-transparent transition-smooth tab-active"
+                        data-tab="personal" role="tab" aria-selected="true" aria-controls="personal-panel">
+                        <span class="flex items-center gap-2">
+                            <span class="material-icons text-lg">person</span>
+                            Datos Personales
+                        </span>
+                    </button>
+
+                    <button
+                        class="tab-button flex-shrink-0 px-6 py-4 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 border-b-2 border-transparent transition-smooth"
+                        data-tab="medical" role="tab" aria-selected="false" aria-controls="medical-panel">
+                        <span class="flex items-center gap-2">
+                            <span class="material-icons text-lg">medical_services</span>
+                            Información Médica
+                        </span>
+                    </button>
+
+                    <button
+                        class="tab-button flex-shrink-0 px-6 py-4 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 border-b-2 border-transparent transition-smooth"
+                        data-tab="history" role="tab" aria-selected="false" aria-controls="history-panel">
+                        <span class="flex items-center gap-2">
+                            <span class="material-icons text-lg">history</span>
+                            Historia Clínica
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Contenido de las tabs -->
+        <div class="space-y-6">
+            <!-- Panel: Datos Personales -->
+            <section id="personal-panel" class="tab-content" role="tabpanel" aria-labelledby="personal-tab"
+                aria-hidden="false">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Información de contacto -->
+                    <div class="bg-white rounded-xl card-shadow p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                            <span class="material-icons text-blue-600">contact_phone</span>
+                            Información de Contacto
+                        </h3>
+
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                                    <div class="flex items-center gap-2 text-sm text-gray-900">
+                                        <span class="material-icons text-gray-400 text-lg">phone</span>
+                                        <span id="patient-phone">--</span>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                    <div class="flex items-center gap-2 text-sm text-gray-900">
+                                        <span class="material-icons text-gray-400 text-lg">email</span>
+                                        <span id="patient-email">--</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Parentesco</label>
+                                <div class="flex items-center gap-2 text-sm text-gray-900">
+                                    <span class="material-icons text-gray-400 text-lg">family_restroom</span>
+                                    <span id="patient-relationship">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dirección -->
+                    <div class="bg-white rounded-xl card-shadow p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                            <span class="material-icons text-blue-600">location_on</span>
+                            Dirección
+                        </h3>
+
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Calle y Número</label>
+                                <p class="text-sm text-gray-900" id="patient-address-street">--</p>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Piso</label>
+                                    <p class="text-sm text-gray-900" id="patient-address-floor">--</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Departamento</label>
+                                    <p class="text-sm text-gray-900" id="patient-address-apt">--</p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Localidad</label>
+                                    <p class="text-sm text-gray-900" id="patient-address-city">--</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Provincia</label>
+                                    <p class="text-sm text-gray-900" id="patient-address-province">--</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Panel: Información Médica -->
+            <section id="medical-panel" class="tab-content hidden" role="tabpanel" aria-labelledby="medical-tab"
+                aria-hidden="true">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Diagnósticos -->
+                    <div class="bg-white rounded-xl card-shadow p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                            <span class="material-icons text-red-600">medical_services</span>
+                            Diagnósticos
+                        </h3>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Diagnóstico
+                                    Principal</label>
+                                <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+                                    <p class="text-sm text-red-900 font-medium" id="patient-main-diagnosis">--</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Diagnósticos
+                                    Secundarios</label>
+                                <div id="patient-secondary-diagnoses" class="space-y-2">
+                                    <!-- Se llenarán dinámicamente -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Obra Social -->
+                    <div class="bg-white rounded-xl card-shadow p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                            <span class="material-icons text-green-600">card_membership</span>
+                            Cobertura Médica
+                        </h3>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Obra Social</label>
+                                <p class="text-sm text-gray-900 font-medium" id="patient-insurance">--</p>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Número de Afiliado</label>
+                                <p class="text-sm text-gray-900 font-mono" id="patient-insurance-number">--</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Alergias -->
+                    <div class="bg-white rounded-xl card-shadow p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                            <span class="material-icons text-orange-600">warning</span>
+                            Alergias
+                        </h3>
+
+                        <div id="patient-allergies" class="space-y-2">
+                            <!-- Se llenarán dinámicamente -->
+                        </div>
+                    </div>
+
+                    <!-- Medicación Actual -->
+                    <div class="bg-white rounded-xl card-shadow p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                            <span class="material-icons text-purple-600">medication</span>
+                            Medicación Actual
+                        </h3>
+
+                        <div id="patient-medications" class="space-y-3">
+                            <!-- Se llenarán dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Antecedentes -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                    <div class="bg-white rounded-xl card-shadow p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                            <span class="material-icons text-blue-600">family_restroom</span>
+                            Antecedentes Familiares
+                        </h3>
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <p class="text-sm text-gray-700 whitespace-pre-wrap" id="patient-family-history">--</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl card-shadow p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                            <span class="material-icons text-blue-600">person</span>
+                            Antecedentes Personales
+                        </h3>
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <p class="text-sm text-gray-700 whitespace-pre-wrap" id="patient-personal-history">--</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Panel: Historia Clínica -->
+            <section id="history-panel" class="tab-content hidden" role="tabpanel" aria-labelledby="history-tab"
+                aria-hidden="true">
+                <div class="bg-white rounded-xl card-shadow p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                            <span class="material-icons text-blue-600">history</span>
+                            Historia Clínica
+                        </h3>
+
+                        <button id="btn-add-entry"
+                            class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 focus-ring transition-smooth">
+                            <span class="material-icons text-lg">add</span>
+                            Nueva Entrada
+                        </button>
+                    </div>
+
+                    <!-- Timeline de historia clínica -->
+                    <div id="clinical-history-timeline" class="space-y-6">
+                        <!-- Se llenará dinámicamente -->
+                    </div>
+
+                    <!-- Estado vacío -->
+                    <div id="history-empty-state" class="text-center py-12 hidden">
+                        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="material-icons text-gray-400 text-2xl">description</span>
+                        </div>
+                        <h4 class="text-lg font-medium text-gray-900 mb-2">Sin entradas en la historia clínica</h4>
+                        <p class="text-gray-600 mb-4">Comienza agregando la primera entrada médica</p>
+                        <button
+                            class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 focus-ring transition-smooth"
+                            onclick="document.getElementById('btn-add-entry').click()">
+                            <span class="material-icons text-lg">add</span>
+                            Agregar Primera Entrada
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Loading overlay -->
+    <div id="loading-overlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl p-6 flex items-center gap-4">
+            <div class="animate-spin rounded-full h-8 w-8 border-2 border-blue-600 border-t-transparent"></div>
+            <span class="text-gray-900 font-medium">Cargando información del paciente...</span>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/patient-detail.js"></script>
+</body>
+
+</html>
